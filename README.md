@@ -1,43 +1,62 @@
-**Methodology & Technical Approach**
-This project applies a full data analytics and forecasting pipeline to large-scale, real-world crime data from Los Angeles (2020–2025), with an emphasis on data integrity, temporal analysis, and predictive modeling.
+Methodology & Technical Approach
 
-**Data Acquisition & Integration**
-Crime incident records were sourced from the LAPD public crime dataset and augmented with macroeconomic indicators from the Federal Reserve Bank of St. Louis (FRED). External datasets were time-aligned to ensure consistency across analytical stages.
+- Analyzed 493 Massachusetts ZIP Code Tabulation Areas (ZCTAs) using U.S. Census Bureau ACS 2019–2023 5-Year Estimates
+- Integrated multiple ACS datasets covering demographics, income, education, employment, and housing characteristics
+- Unified datasets using ZCTA identifiers to create a ZIP-level analytical base table
+- Selected key socioeconomic indicators influencing community desirability:
+    -Median household income
+    -Educational attainment (% Bachelor’s degree or higher)
+    -Unemployment rate
+    -Housing rent burden (% paying ≥35% of income)
+    -Percentage of senior population (65+)
+- Performed data cleaning to handle missing values, inconsistent formats, and non-numeric fields
+- Converted all analytical variables to numeric types and validated completeness across ZIP codes
+- Filtered final dataset to ZIP codes with sufficient data coverage
+- Applied min–max normalization to standardize all variables onto a 0–100 scale
+- Treated variables directionally:
+    -Positive factors (income, education): higher values score higher
+    -Negative factors (unemployment, rent burden, seniors): lower values score higher
+- Constructed a weighted composite desirability score using the following model:
+    -Income: 25%
+    -Education: 25%
+    -Employment (inverse unemployment): 20%
+    -Housing affordability (inverse rent burden): 20%
+    -Age structure (inverse seniors): 10%
+- Generated overall desirability scores ranging from approximately 26 to 86
+- Evaluated score distribution using descriptive statistics, skewness, and kurtosis
+- Conducted correlation analysis to identify key drivers of desirability
+- Found strong positive correlations between overall score and:
+    -Median income
+    -Educational attainment
+- Identified moderate negative correlations with unemployment and rent burden
+- Performed K-Means clustering (k=4) on normalized dimension scores
+- Classified ZIP codes into performance groups:
+    -High Performing
+    -Moderate-High
+    -Moderate-Low
+    -Needs Improvement
+- Analyzed socioeconomic characteristics of each cluster to identify structural disparities
+- Conducted regional analysis using ZIP code prefixes
+- Compared performance between Greater Boston (02xx) and other Massachusetts regions (01xx)
+- Performed income quintile analysis to assess inequality across ZIP codes
+- Identified income as the strongest stratifier of overall desirability
+- Implemented outlier detection using Z-scores to identify extreme high- and low-performing ZIP codes
+- Compared top and bottom ZIP codes across all scoring dimensions
+- Developed interactive visualizations using Plotly:
+    -Choropleth maps of desirability scores
+    -Cluster-based geographic maps
+    -Scatter plots for correlation analysis
+    -Distribution histograms and comparison charts
+- Built an interactive web-based dashboard enabling:
+    -ZIP code filtering and search
+    -Multi-ZIP comparison
+    -Dynamic geographic exploration
+    -Detailed metric inspection via hover and tables
 
-**Data Cleaning & Transformation**
-The raw dataset required substantial preprocessing due to missing values, redundant fields, and ambiguous metadata. Columns with excessive null values or low analytical relevance were removed. Remaining missing values were handled using context-appropriate placeholders. Categorical variables were standardized, and additional derived features—such as crime categories and victim age groups—were engineered to support deeper analysis.
-
-**Exploratory Analysis**
-Exploratory Data Analysis (EDA) was conducted to identify temporal, spatial, and behavioral crime patterns. This included:
-
-- Long-term and seasonal crime trends
-- Crime distribution by type, region, and location
-- Day-of-week and time-of-day analysis
-- Demographic patterns related to victim characteristics
-
-Visual analytics were used extensively to validate trends and expose inconsistencies in reporting.
-
-**Economic Relationship Analysis**
-Unemployment data from FRED was incorporated to assess the relationship between economic conditions and crime rates. Correlation analysis revealed a negative relationship between unemployment and reported crime, particularly during the COVID-19 period, highlighting the impact of mobility restrictions and economic disruption on crime patterns.
-
-**Anomaly Detection & Data Reliability**
-Significant anomalies were detected in late-2024 and 2025 data due to LAPD reporting system changes. These periods were explicitly flagged and treated cautiously in downstream analysis. Heatmaps and temporal comparisons were used to validate reporting gaps and structural breaks.
-
-**Forecasting & Predictive Modeling**
-Two time-series forecasting approaches were implemented:
-
-- ARIMA for long-term, yearly crime projections (excluding incomplete 2025 data)
-- Prophet for short-term, monthly forecasts incorporating recent trends
-
-Forecast outputs were evaluated in the context of data quality limitations and reporting delays.
-
-**Visualization & Interpretation**
-
-Results were communicated through clear, interpretable visualizations including trend plots, heatmaps, and forecast confidence intervals. All findings were consolidated into a formal analytical report with documented assumptions and limitations.
-
-**Technical Focus**
-- Real-world data cleaning and validation
-- Time-series analysis under incomplete data conditions
-- Integration of external economic indicators
-- Forecasting with uncertainty awareness
-- Analytical storytelling through visualization
+Technical Emphasis
+- Multi-source data integration (ACS datasets)
+- Feature normalization and weighted scoring models
+- Statistical correlation and distribution analysis
+- Unsupervised clustering (K-Means)
+- Geospatial visualization and interactive dashboards
+- Socioeconomic inequality analysis at ZIP-code granularity
